@@ -1,9 +1,9 @@
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rabbit_requester/providers/connections_provider.dart';
 
-import '/services/amqp/amqp_request.dart';
-import 'services/amqp/amqp_client_manager.dart';
-import 'services/amqp/amqp_client.dart';
+import 'widgets/connections_selector/connections_selector_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,12 +14,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rabbit Sender',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ConnectionsProvider(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Rabbit Sender',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
+        debugShowCheckedModeBanner: false,
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -32,6 +40,9 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Rabbit Sender'),
+        actions: const [
+          ConnectionsSelector()
+        ]
       ),
       body: Row(
         children: [
@@ -45,51 +56,8 @@ class MyHomePage extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("My Title $index"),
-                            content: Column(children: [
-                              Row(
-                                children: const [
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                ],
-                              ),                              
-                              Row(
-                                children: const [
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                ],
-                              ),                              
-                              Row(
-                                children: const [
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                ],
-                              ),                              
-                              Row(
-                                children: const [
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                  Text('asdasd'),
-                                ],
-                              ),
+                            content: Column(children: const [
+                              Text('Placeholder')
                             ]),
                             actions: [
                               TextButton(
@@ -104,7 +72,7 @@ class MyHomePage extends StatelessWidget {
                             ],
                           )),
                   child: Text('$index')),
-              itemCount: 30,
+              itemCount: 1,
             ),
           )
         ],
