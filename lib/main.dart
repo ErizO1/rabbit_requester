@@ -2,6 +2,7 @@ import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_requester/providers/connections_provider.dart';
+import 'package:rabbit_requester/widgets/message_editor/message_editor_widget.dart';
 
 import 'widgets/connections_selector/connections_selector_widget.dart';
 
@@ -39,11 +40,8 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rabbit Sender'),
-        actions: const [
-          ConnectionsSelector()
-        ]
-      ),
+          title: const Text('Rabbit Sender'),
+          actions: const [ConnectionsSelector()]),
       body: Row(
         children: [
           Drawer(
@@ -51,30 +49,11 @@ class MyHomePage extends StatelessWidget {
               separatorBuilder: (context, index) => const Divider(
                   // color: Colors.black,
                   ),
-              itemBuilder: (context, index) => TextButton(
-                  onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                            title: Text("My Title $index"),
-                            content: Column(children: const [
-                              Text('Placeholder')
-                            ]),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, 'Cancel'),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          )),
-                  child: Text('$index')),
+              itemBuilder: (context, index) => Text("My Title $index"),
               itemCount: 1,
             ),
-          )
+          ),
+          const SendButton(),
         ],
       ),
     );

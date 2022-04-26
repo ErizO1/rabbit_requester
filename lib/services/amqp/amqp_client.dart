@@ -8,7 +8,6 @@ import "amqp_pending_request.dart";
 const String _replyToQueue = 'amq.rabbitmq.reply-to';
 
 class AMQPClient {
-  
   Client? _client;
   Channel? _channel;
   Queue? _replyQueue;
@@ -22,9 +21,8 @@ class AMQPClient {
   }
 
   void _init(ConnectionSettings settings) async {
-
     _client = Client(settings: settings);
-    _client!.connect();
+    await _client!.connect();
 
     _channel = await _client!.channel();
     _replyQueue = await _channel!.queue(_replyToQueue);
@@ -36,7 +34,8 @@ class AMQPClient {
   }
 
   void _onDataHandler(AmqpMessage message) {
-    final pendingRequest = _pendingExecutions[message.properties?.corellationId];
+    final pendingRequest =
+        _pendingExecutions[message.properties?.corellationId];
 
     if (pendingRequest == null) {
       return; // Ignore if the request doesn't have a completer
@@ -60,19 +59,21 @@ class AMQPClient {
     final messageProperties = MessageProperties()
       ..corellationId = corellationId
       ..replyTo = _replyToQueue;
-      
+
     queue.publish(request.message, properties: messageProperties);
 
     // Create and sotre the pending request
     final requestCompleter = Completer<AmqpMessage>();
-    final timeoutTimer = Timer(const Duration(seconds: 10), () => requestCompleter.completeError("Request Timed Out"));
+    final timeoutTimer = Timer(const Duration(seconds: 10),
+        () => requestCompleter.completeError("Request Timed Out"));
 
-    final pendingRequest = AMQPPendingRequest(request: request, completer: requestCompleter, timeoutTimer: timeoutTimer);
+    final pendingRequest = AMQPPendingRequest(
+        request: request,
+        completer: requestCompleter,
+        timeoutTimer: timeoutTimer);
 
     _pendingExecutions[corellationId] = pendingRequest;
 
-
     return requestCompleter.future;
   }
-
 }
